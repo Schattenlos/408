@@ -1,0 +1,77 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+//初始化
+typedef struct DNode{
+    int data;
+    struct DNode *prior, *next;
+}DNode, *DLinkList;
+
+void testDLinkList(){
+    DLinkList L;
+    InitDLinkList(L);
+}
+
+bool InitDLinkList(DLinkList &L){
+    L=(DNode *)malloc(sizeof(DNode));
+    if(L==NULL)
+        return false;
+    L->next=NULL;
+    L->prior=NULL;
+    return true;
+}
+
+bool Empty(DLinkList L){
+    if(L->next==NULL)
+        return true;
+    else
+        return false;
+}
+
+//后插
+bool InsertNextDNode(DNode *p, DNode *s){
+    if(p==NULL || s==NULL)
+        return false;
+    s->next=p->next;
+    if(p->next !=NULL)
+        p->next->prior=s;
+    s->prior=p;
+    p->next=s;              //修改指针时如果换顺序？
+}                           //按位序插入、前插等如何通过后插实现？
+
+//后删
+bool DeleteNextDNode(DNode *p){
+    if(p==NULL)
+        return false;
+    DNode *q=p->next;
+    if(q==NULL)
+        return false;
+    p->next=q->next;
+    if(q->next!=NULL)
+        q->next->prior=p;
+    free(q);
+    return true;
+}
+    //循环释放
+void DestroyList(DLinkList &L){
+    while (L->next !=NULL)
+        DeleteNextDNode(L);
+    free(L);
+    L=NULL;
+}
+
+//遍历
+    //后向
+while(p!=NULL){
+    p=p->next;
+}
+    //前向
+while(p!=NULL){
+    p=p->prior;
+}
+    //前向（跳过头结点）
+while(p->prior!=NULL){
+    p=p->prior;
+}
+
+//平均时间复杂度O(n)=n
